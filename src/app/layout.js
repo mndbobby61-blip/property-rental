@@ -1,6 +1,9 @@
 import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
-import { Providers } from "./providers";
+// import { Providers } from "./providers";
 import "./globals.css";
+import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
+import { Providers } from "./providers";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -27,7 +30,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable} font-sans`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
