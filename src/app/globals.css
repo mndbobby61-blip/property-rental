@@ -1,26 +1,21 @@
 @import "tailwindcss";
+@layer theme, base, components, utilities;
+@plugin './hero.ts';
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-blueprint-ink: #16253A;
+  --color-blueprint-line: #8FB8D9;
+  --color-blueprint-paper: #F7F5F0;
+  --color-blueprint-amber: #E8A23D;
+  --color-blueprint-charcoal: #1F2A33;
+  --color-blueprint-slate: #5C7185;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
 }
