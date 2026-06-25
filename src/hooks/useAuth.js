@@ -1,10 +1,17 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
+
 export default function useAuth() {
-  // আপাতত সবসময় logged-out ধরে নিচ্ছি।
-  // টেস্ট করার জন্য সাময়িকভাবে user: { email: "test@test.com" } বসিয়ে দেখতে পারো।
+  const { data, isPending } = authClient.useSession();
+
   return {
-    user: null,
-    loading: false,
+    user: data?.user || null,
+    loading: isPending,
+    signIn: (email, password) => authClient.signIn.email({ email, password }),
+    createUser: (email, password, name, photo) =>
+      authClient.signUp.email({ email, password, name, image: photo }),
+    googleSignIn: () => authClient.signIn.social({ provider: "google", callbackURL: "/" }),
+    logOut: () => authClient.signOut(),
   };
 }

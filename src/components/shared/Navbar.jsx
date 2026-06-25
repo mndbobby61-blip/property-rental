@@ -10,13 +10,35 @@ const navLinks = [
   { href: "/all-properties", label: "All Properties" },
 ];
 
+function Avatar({ user }) {
+  if (user?.image) {
+    return (
+      <img
+        src={user.image}
+        alt={user.name || "Profile"}
+        className="h-8 w-8 rounded-full object-cover border border-blueprint-line/30"
+      />
+    );
+  }
+  const initial = user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U";
+  return (
+    <span className="h-8 w-8 rounded-full bg-blueprint-amber/20 border border-blueprint-amber/40 flex items-center justify-center text-xs font-mono font-semibold text-blueprint-amber">
+      {initial}
+    </span>
+  );
+}
+
 export default function Navbar() {
-  const { user } = useAuth();
+  const { user, logOut } = useAuth();
   const [open, setOpen] = useState(false);
 
-  // TODO (Phase 2): logOut() will come from AuthProvider's Firebase signOut.
-  const handleLogout = () => {
-    console.log("logOut() will be wired up in Phase 2");
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      setOpen(false);
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   return (
@@ -55,6 +77,9 @@ export default function Navbar() {
               >
                 <LayoutDashboard size={15} /> Dashboard
               </Link>
+
+              <Avatar user={user} />
+
               <button
                 onClick={handleLogout}
                 className="inline-flex items-center gap-1.5 text-sm font-medium bg-blueprint-amber text-blueprint-ink px-4 py-2 rounded-sm hover:bg-blueprint-amber/90 transition-colors"
@@ -108,6 +133,10 @@ export default function Navbar() {
 
           {user ? (
             <>
+              <div className="flex items-center gap-3">
+                <Avatar user={user} />
+                <span className="text-sm text-blueprint-paper">{user.name || user.email}</span>
+              </div>
               <Link
                 href="/dashboard"
                 onClick={() => setOpen(false)}
@@ -116,10 +145,7 @@ export default function Navbar() {
                 Dashboard
               </Link>
               <button
-                onClick={() => {
-                  handleLogout();
-                  setOpen(false);
-                }}
+                onClick={handleLogout}
                 className="text-sm font-medium bg-blueprint-amber text-blueprint-ink px-4 py-2 rounded-sm w-fit"
               >
                 Logout
