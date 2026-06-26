@@ -1,24 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import SectionTitle from "../shared/SectionTitle";
 import PropertyCard from "../property/PropertyCard";
-
-/**
- * TEMP MOCK DATA — Phase 5/backend integration-এ এটা বদলে যাবে:
- *   const res = await axiosPublic.get("/properties?status=approved&limit=6");
- * তখন নিচের `properties` array-টা সরিয়ে res.data বসাবে। বাকি JSX অপরিবর্তিত থাকবে।
- */
-const properties = [
-  { _id: "1", title: "Sunny 2-Bed Apartment", location: "Gulshan 2, Dhaka", type: "Apartment", price: 28000, beds: 2, baths: 2, image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800" },
-  { _id: "2", title: "Quiet Family House", location: "Bashundhara R/A, Dhaka", type: "House", price: 45000, beds: 4, baths: 3, image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=800" },
-  { _id: "3", title: "Modern Studio Unit", location: "Banani, Dhaka", type: "Studio", price: 16000, beds: 1, baths: 1, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800" },
-  { _id: "4", title: "Shared Room near Campus", location: "Mohammadpur, Dhaka", type: "Room", price: 7000, beds: 1, baths: 1, image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=800" },
-  { _id: "5", title: "Compact Office Space", location: "Dhanmondi, Dhaka", type: "Office", price: 32000, beds: 0, baths: 1, image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800" },
-  { _id: "6", title: "Riverside Duplex", location: "Uttara, Dhaka", type: "House", price: 52000, beds: 3, baths: 2, image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=800" },
-];
+import useAxiosPublic from "@/hooks/useAxiosPublic";
 
 const gridVariants = {
   hidden: {},
@@ -31,6 +19,19 @@ const cardVariants = {
 };
 
 export default function FeaturedProperties() {
+  const axiosPublic = useAxiosPublic();
+  const [properties, setProperties] = useState([]);
+
+  // ⚠️ আগে এখানে mock data ছিল (_id: "1", "2"...) — এখন real backend থেকে আনা হচ্ছে।
+  useEffect(() => {
+    axiosPublic
+      .get("/properties", { params: { limit: 6 } })
+      .then((res) => setProperties(res.data.properties || []))
+      .catch((err) => console.error("Failed to load featured properties:", err));
+  }, [axiosPublic]);
+
+  if (properties.length === 0) return null; // ডাটা না এলে সেকশনটা hide থাকবে
+
   return (
     <section className="bg-blueprint-paper py-20 md:py-28">
       <div className="max-w-6xl mx-auto px-6">

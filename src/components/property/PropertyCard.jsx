@@ -1,21 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MapPin, BedDouble, Bath, ArrowUpRight } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 
 /**
  * PropertyCard
  * -------------
- * Reused in: FeaturedProperties (home), RecentProperties (home), All Properties page.
- * Corner crop-marks (the 4 small L-shapes) only appear on hover — a quiet nod
- * to the blueprint/survey-sheet motif without overdoing it on every card.
+ * ⚠️ ফিক্স: আগে href সরাসরি `user`-এর উপর ভিত্তি করে বদলাতো (/property/x বা /login),
+ * যেটা server-render আর client hydrate-এর মাঝে আলাদা হয়ে hydration mismatch warning দিতো
+ * (কারণ session লোড হওয়ার আগে server-এ user থাকে না, পরে client-এ থাকে)।
  *
- * @param {object} property - { _id, title, location, type, price, rentType, beds, baths, image }
- * @param {string} [badge]  - optional small tag over the image, e.g. "Added 2d ago"
+ * এখন href সবসময় স্থির থাকে (/property/${_id}), লগইন-চেক হয় ক্লিক করার সময়
+ * (onClick হ্যান্ডলারে) — তাই server আর client-এর HTML সবসময় মিলে যায়।
  */
 export default function PropertyCard({ property, badge }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const {
     _id,
     title,
@@ -28,12 +30,17 @@ export default function PropertyCard({ property, badge }) {
     image,
   } = property;
 
-  // Not logged in -> details link sends them to /login instead of the property page.
-  const detailsHref = user ? `/property/${_id}` : `/login`;
+  const detailsHref = `/property/${_id}`;
+
+  const handleClick = (e) => {
+    if (!loading && !user) {
+      e.preventDefault();
+      router.push("/login");
+    }
+  };
 
   return (
     <div className="group relative bg-white border border-blueprint-charcoal/10 rounded-sm overflow-hidden transition-shadow hover:shadow-lg hover:shadow-blueprint-ink/5">
-      {/* corner crop marks */}
       {["top-0 left-0 border-t border-l", "top-0 right-0 border-t border-r", "bottom-0 left-0 border-b border-l", "bottom-0 right-0 border-b border-r"].map(
         (pos, i) => (
           <span
@@ -88,6 +95,7 @@ export default function PropertyCard({ property, badge }) {
 
           <Link
             href={detailsHref}
+            onClick={handleClick}
             className="inline-flex items-center gap-1 text-sm font-medium text-blueprint-ink hover:text-blueprint-amber transition-colors"
           >
             View Details <ArrowUpRight size={15} />

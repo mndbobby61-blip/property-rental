@@ -1,22 +1,33 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import SectionTitle from "../shared/SectionTitle";
 import PropertyCard from "../property/PropertyCard";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
 
-/**
- * Extra Section #2 — Recently Added Properties
- * TEMP MOCK DATA — পরে backend থেকে আসবে:
- *   const res = await axiosPublic.get("/properties?sort=-createdAt&limit=4");
- * Badge text (`Added Xd ago`) backend থেকে createdAt দিয়ে calculate করবে।
- */
-const recentProperties = [
-  { _id: "7", title: "Bright Corner Apartment", location: "Mirpur DOHS, Dhaka", type: "Apartment", price: 21000, beds: 2, baths: 1, image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=800", badge: "Added 1d ago" },
-  { _id: "8", title: "Furnished Studio", location: "Dhanmondi, Dhaka", type: "Studio", price: 19500, beds: 1, baths: 1, image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=800", badge: "Added 2d ago" },
-  { _id: "9", title: "Spacious Family Home", location: "Baridhara, Dhaka", type: "House", price: 60000, beds: 4, baths: 3, image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=800", badge: "Added 3d ago" },
-];
+function timeAgo(date) {
+  const diffMs = Date.now() - new Date(date).getTime();
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (days <= 0) return "Added today";
+  if (days === 1) return "Added 1d ago";
+  return `Added ${days}d ago`;
+}
 
 export default function RecentProperties() {
+  const axiosPublic = useAxiosPublic();
+  const [properties, setProperties] = useState([]);
+
+  // ⚠️ আগে এখানে mock data ছিল (_id: "7", "8", "9") — এখন real backend থেকে আনা হচ্ছে।
+  useEffect(() => {
+    axiosPublic
+      .get("/properties", { params: { limit: 3 } })
+      .then((res) => setProperties(res.data.properties || []))
+      .catch((err) => console.error("Failed to load recent properties:", err));
+  }, [axiosPublic]);
+
+  if (properties.length === 0) return null;
+
   return (
     <section className="bg-white py-20 md:py-28">
       <div className="max-w-6xl mx-auto px-6">
@@ -29,8 +40,12 @@ export default function RecentProperties() {
           transition={{ duration: 0.45 }}
           className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {recentProperties.map((property) => (
-            <PropertyCard key={property._id} property={property} badge={property.badge} />
+          {properties.map((property) => (
+            <PropertyCard
+              key={property._id}
+              property={property}
+              badge={property.createdAt ? timeAgo(property.createdAt) : undefined}
+            />
           ))}
         </motion.div>
       </div>

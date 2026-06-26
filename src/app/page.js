@@ -11,7 +11,6 @@ export default function Home() {
   return (
     <main>
       <Banner />
-      <SearchBar />
       <FeaturedProperties />
       <WhyChooseUs />
       <Reviews />
