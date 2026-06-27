@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import useAuth from "@/hooks/useAuth";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 
 const PROPERTY_TYPES = ["Apartment", "House", "Studio", "Room", "Office", "Land"];
 const RENT_TYPES = ["Monthly", "Weekly", "Daily"];
 
 export default function AddPropertyPage() {
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
 
@@ -43,7 +43,7 @@ export default function AddPropertyPage() {
 
     setSubmitting(true);
     try {
-      await axiosPublic.post("/properties", propertyData);
+      await axiosSecure.post("/properties", propertyData);
       toast.success("Property submitted for approval!");
       router.push("/dashboard/owner/my-properties");
     } catch (err) {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X, LayoutDashboard, LogOut } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -65,6 +66,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <ThemeToggle />
         </nav>
 
         {/* Desktop auth actions */}

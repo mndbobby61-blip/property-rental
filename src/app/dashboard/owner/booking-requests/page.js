@@ -4,27 +4,27 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Check, X } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
 export default function BookingRequestsPage() {
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user?.email) return;
-    axiosPublic
+    axiosSecure
       .get(`/booking-requests/${user.email}`)
       .then((res) => setBookings(res.data))
       .catch((err) => console.error("Failed to load booking requests:", err))
       .finally(() => setLoading(false));
-  }, [user, axiosPublic]);
+  }, [user, axiosSecure]);
 
   const handleStatusChange = async (id, status) => {
     try {
-      await axiosPublic.patch(`/bookings/${id}/status`, { status });
+      await axiosSecure.patch(`/bookings/${id}/status`, { status });
       setBookings((prev) => prev.map((b) => (b._id === id ? { ...b, bookingStatus: status } : b)));
       toast.success(`Booking ${status}`);
     } catch (err) {

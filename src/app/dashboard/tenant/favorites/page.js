@@ -5,27 +5,27 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Trash2 } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
 export default function FavoritesPage() {
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user?.email) return;
-    axiosPublic
+    axiosSecure
       .get(`/favorites/${user.email}`)
       .then((res) => setFavorites(res.data))
       .catch((err) => console.error("Failed to load favorites:", err))
       .finally(() => setLoading(false));
-  }, [user, axiosPublic]);
+  }, [user, axiosSecure]);
 
   const handleRemove = async (favoriteId) => {
     try {
-      await axiosPublic.delete(`/favorites/${favoriteId}`);
+      await axiosSecure.delete(`/favorites/${favoriteId}`);
       setFavorites((prev) => prev.filter((f) => f.favoriteId !== favoriteId));
       toast.success("Removed from favorites");
     } catch (err) {

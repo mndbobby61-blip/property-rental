@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Wallet, Building2, CalendarCheck } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
 function SummaryCard({ icon: Icon, label, value }) {
@@ -23,18 +23,18 @@ function SummaryCard({ icon: Icon, label, value }) {
 
 export default function OwnerDashboardHome() {
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user?.email) return;
-    axiosPublic
+    axiosSecure
       .get(`/owner-stats/${user.email}`)
       .then((res) => setStats(res.data))
       .catch((err) => console.error("Failed to load owner stats:", err))
       .finally(() => setLoading(false));
-  }, [user, axiosPublic]);
+  }, [user, axiosSecure]);
 
   if (loading) return <Loading />;
   if (!stats) return <p className="text-blueprint-slate text-sm">Could not load dashboard stats.</p>;

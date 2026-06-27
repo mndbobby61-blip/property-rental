@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
 const PROPERTY_TYPES = ["Apartment", "House", "Studio", "Room", "Office", "Land"];
@@ -11,14 +12,14 @@ const RENT_TYPES = ["Monthly", "Weekly", "Daily"];
 
 export default function UpdatePropertyPage({ params }) {
   const router = useRouter();
-  const axiosPublic = useAxiosPublic();
+  const axiosPublic = useAxiosPublic(); // GET টা public (Property Details পেজও এটা শেয়ার করে)
+  const axiosSecure = useAxiosSecure(); // PATCH টা protected
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [propertyId, setPropertyId] = useState(null);
 
   useEffect(() => {
-    // Next.js 15+/16-এ params Promise — await করে নেওয়া হচ্ছে
     Promise.resolve(params).then(({ id }) => {
       setPropertyId(id);
       axiosPublic
@@ -55,7 +56,7 @@ export default function UpdatePropertyPage({ params }) {
 
     setSubmitting(true);
     try {
-      await axiosPublic.patch(`/properties/${propertyId}`, updatedData);
+      await axiosSecure.patch(`/properties/${propertyId}`, updatedData);
       toast.success("Property updated!");
       router.push("/dashboard/owner/my-properties");
     } catch (err) {

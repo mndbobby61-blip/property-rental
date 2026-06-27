@@ -2,27 +2,27 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
 const ROLES = ["tenant", "owner", "admin"];
 
 export default function AllUsersPage() {
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosPublic
+    axiosSecure
       .get("/users/all")
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("Failed to load users:", err))
       .finally(() => setLoading(false));
-  }, [axiosPublic]);
+  }, [axiosSecure]);
 
   const handleRoleChange = async (id, role) => {
     try {
-      await axiosPublic.patch(`/users/${id}/role`, { role });
+      await axiosSecure.patch(`/users/${id}/role`, { role });
       setUsers((prev) => prev.map((u) => (u._id === id ? { ...u, role } : u)));
       toast.success("Role updated");
     } catch (err) {

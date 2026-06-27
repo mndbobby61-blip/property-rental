@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
-import { Check, X, Trash2 } from "lucide-react";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import { Check, X, Trash2, Pencil } from "lucide-react";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 import RejectionModal from "@/components/dashboard/RejectionModal";
 
@@ -14,22 +15,29 @@ const statusStyles = {
 };
 
 export default function AdminAllPropertiesPage() {
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [rejectingId, setRejectingId] = useState(null);
 
-  useEffect(() => {
-    axiosPublic
-      .get("/properties/all")
-      .then((res) => setProperties(res.data))
-      .catch((err) => console.error("Failed to load properties:", err))
-      .finally(() => setLoading(false));
-  }, [axiosPublic]);
+ useEffect(() => {
+  axiosSecure
+    .get("/properties/all")
+    .then((res) => {
+      console.log("SUCCESS:", res.data);
+      setProperties(res.data);
+    })
+    .catch((err) => {
+      console.log("STATUS:", err.response?.status);
+      console.log("DATA:", err.response?.data);
+      console.log("FULL:", err);
+    })
+    .finally(() => setLoading(false));
+}, [axiosSecure]);
 
   const handleApprove = async (id) => {
     try {
-      await axiosPublic.patch(`/properties/${id}/status`, { status: "approved" });
+      await axiosSecure.patch(`/properties/${id}/status`, { status: "approved" });
       setProperties((prev) => prev.map((p) => (p._id === id ? { ...p, status: "approved" } : p)));
       toast.success("Property approved");
     } catch (err) {
@@ -39,7 +47,7 @@ export default function AdminAllPropertiesPage() {
 
   const handleRejectSubmit = async (feedback) => {
     try {
-      await axiosPublic.patch(`/properties/${rejectingId}/status`, {
+      await axiosSecure.patch(`/properties/${rejectingId}/status`, {
         status: "rejected",
         rejectionFeedback: feedback,
       });
@@ -57,7 +65,7 @@ export default function AdminAllPropertiesPage() {
 
   const handleDelete = async (id) => {
     try {
-      await axiosPublic.delete(`/properties/${id}`);
+      await axiosSecure.delete(`/properties/${id}`);
       setProperties((prev) => prev.filter((p) => p._id !== id));
       toast.success("Property deleted");
     } catch (err) {
@@ -122,6 +130,13 @@ export default function AdminAllPropertiesPage() {
                           <X size={16} />
                         </button>
                       )}
+                      <Link
+                        href={`/dashboard/owner/update-property/${p._id}`}
+                        className="text-blueprint-slate hover:text-blueprint-ink"
+                        aria-label="Edit property"
+                      >
+                        <Pencil size={16} />
+                      </Link>
                       <button
                         onClick={() => handleDelete(p._id)}
                         className="text-blueprint-slate hover:text-blueprint-charcoal"

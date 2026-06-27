@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { X } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 
 export default function BookingModal({ property, onClose }) {
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
 
@@ -34,7 +34,7 @@ export default function BookingModal({ property, onClose }) {
         notes,
       };
 
-      const res = await axiosPublic.post("/bookings", bookingData);
+      const res = await axiosSecure.post("/bookings", bookingData);
       toast.success("Booking request submitted!");
       onClose();
       router.push(`/payment/${res.data.insertedId}`);
@@ -48,10 +48,7 @@ export default function BookingModal({ property, onClose }) {
   return (
     <div className="fixed inset-0 bg-blueprint-ink/60 flex items-center justify-center z-[100] px-4">
       <div className="bg-white rounded-sm max-w-md w-full p-6 relative">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-blueprint-slate hover:text-blueprint-charcoal"
-        >
+        <button onClick={onClose} className="absolute top-4 right-4 text-blueprint-slate hover:text-blueprint-charcoal">
           <X size={20} />
         </button>
 

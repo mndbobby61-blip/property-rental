@@ -2,23 +2,23 @@
 
 import { useState, useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
 export default function MyBookingsPage() {
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user?.email) return;
-    axiosPublic
+    axiosSecure
       .get("/bookings", { params: { email: user.email } })
       .then((res) => setBookings(res.data))
       .catch((err) => console.error("Failed to load bookings:", err))
       .finally(() => setLoading(false));
-  }, [user, axiosPublic]);
+  }, [user, axiosSecure]);
 
   if (loading) return <Loading />;
 

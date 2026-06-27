@@ -1,21 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
 export default function AdminAllBookingsPage() {
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosPublic
+    axiosSecure
       .get("/bookings/all")
       .then((res) => setBookings(res.data))
       .catch((err) => console.error("Failed to load bookings:", err))
       .finally(() => setLoading(false));
-  }, [axiosPublic]);
+  }, [axiosSecure]);
 
   if (loading) return <Loading />;
 

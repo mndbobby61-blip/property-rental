@@ -5,7 +5,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Trash2, Pencil } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
 const statusStyles = {
@@ -16,22 +16,22 @@ const statusStyles = {
 
 export default function MyPropertiesPage() {
   const { user } = useAuth();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user?.email) return;
-    axiosPublic
+    axiosSecure
       .get(`/properties/owner/${user.email}`)
       .then((res) => setProperties(res.data))
       .catch((err) => console.error("Failed to load properties:", err))
       .finally(() => setLoading(false));
-  }, [user, axiosPublic]);
+  }, [user, axiosSecure]);
 
   const handleDelete = async (id) => {
     try {
-      await axiosPublic.delete(`/properties/${id}`);
+      await axiosSecure.delete(`/properties/${id}`);
       setProperties((prev) => prev.filter((p) => p._id !== id));
       toast.success("Property deleted");
     } catch (err) {

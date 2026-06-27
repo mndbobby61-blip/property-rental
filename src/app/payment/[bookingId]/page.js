@@ -3,40 +3,33 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { CreditCard, CheckCircle2 } from "lucide-react";
-import useAxiosPublic from "@/hooks/useAxiosPublic";
+import { CreditCard } from "lucide-react";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
 
-/**
- * ⚠️ সাময়িক স্টপগ্যাপ পেজ — সময়ের চাপে আসল Stripe Checkout এখনো বসানো হয়নি।
- * এখন "Pay Now" বাটনে ক্লিক করলেই booking-টা paid মার্ক হয়ে যাবে, যাতে পুরো
- * booking flow (Property → Modal → Payment → Success) আজ রাতেই demo-able থাকে।
- * সময় পেলে এই বাটনের জায়গায় আসল Stripe Elements/Checkout বসানো হবে।
- */
 export default function PaymentPage({ params }) {
   const router = useRouter();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
   const [bookingId, setBookingId] = useState(null);
 
   useEffect(() => {
-    // Next.js 15+/16-এ params Promise — client component-এ Promise.resolve দিয়ে handle করছি
     Promise.resolve(params).then(({ bookingId }) => {
       setBookingId(bookingId);
-      axiosPublic
+      axiosSecure
         .get(`/bookings/${bookingId}`)
         .then((res) => setBooking(res.data))
         .catch((err) => console.error("Failed to load booking:", err))
         .finally(() => setLoading(false));
     });
-  }, [params, axiosPublic]);
+  }, [params, axiosSecure]);
 
   const handlePay = async () => {
     setPaying(true);
     try {
-      await axiosPublic.patch(`/bookings/${bookingId}/confirm-payment`);
+      await axiosSecure.patch(`/bookings/${bookingId}/confirm-payment`);
       toast.success("Payment successful!");
       router.push("/payment-success");
     } catch (err) {

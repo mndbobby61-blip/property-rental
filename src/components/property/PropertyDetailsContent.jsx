@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { MapPin, BedDouble, Bath, Maximize, Heart, CalendarCheck, Star, Quote } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "../shared/Loading";
 import ErrorPage from "../shared/ErrorPage";
 import BookingModal from "./BookingModal";
@@ -12,6 +13,7 @@ import BookingModal from "./BookingModal";
 export default function PropertyDetailsContent({ id }) {
   const { user } = useAuth();
   const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -61,7 +63,7 @@ export default function PropertyDetailsContent({ id }) {
   const handleFavoriteClick = async () => {
     setFavoriting(true);
     try {
-      const res = await axiosPublic.post("/favorites", { email: user.email, propertyId: id });
+      const res = await axiosSecure.post("/favorites", { email: user.email, propertyId: id });
       if (res.data.insertedId === null) {
         toast("Already in your favorites");
       } else {
@@ -82,7 +84,7 @@ export default function PropertyDetailsContent({ id }) {
     }
     setSubmittingReview(true);
     try {
-      await axiosPublic.post("/reviews", {
+      await axiosSecure.post("/reviews", {
         propertyId: id,
         name: user.name,
         email: user.email,
