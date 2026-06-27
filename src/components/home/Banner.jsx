@@ -1,7 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import SearchBar from "./SearchBar";
+
+// ব্যাকগ্রাউন্ডে ঘুরবে এমন ছবি — চাইলে নিজের প্রপার্টির ছবি দিয়ে বদলে দিতে পারো
+const bannerImages = [
+  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1600",
+  "https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=1600",
+  "https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=1600",
+];
 
 const container = {
   hidden: {},
@@ -16,9 +24,37 @@ const item = {
 };
 
 export default function Banner() {
+  const [currentImage, setCurrentImage] = useState(0);
+
+  // ৫ সেকেন্ড পর পর পরের ছবিতে crossfade
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % bannerImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative bg-blueprint-ink overflow-hidden">
-      {/* faint blueprint grid background */}
+      {/* ব্যাকগ্রাউন্ড ছবি carousel (crossfade) */}
+      <div className="absolute inset-0">
+        <AnimatePresence mode="sync">
+          <motion.img
+            key={currentImage}
+            src={bannerImages[currentImage]}
+            alt=""
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.4, ease: "easeInOut" }}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </AnimatePresence>
+        {/* অন্ধকার ওভারলে — টেক্সট পড়া যাবে, blueprint-ink mood থাকবে */}
+        <div className="absolute inset-0 bg-blueprint-ink/40" />
+      </div>
+
+      {/* faint blueprint grid, ছবির উপরে */}
       <div
         className="absolute inset-0 opacity-[0.07]"
         style={{
@@ -28,16 +64,29 @@ export default function Banner() {
         }}
       />
 
+      {/* carousel indicator dots */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {bannerImages.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentImage(i)}
+            className={`h-1.5 rounded-full transition-all ${
+              i === currentImage ? "w-6 bg-blueprint-amber" : "w-1.5 bg-blueprint-paper/40"
+            }`}
+            aria-label={`Slide ${i + 1}`}
+          />
+        ))}
+      </div>
+
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
         className="relative max-w-6xl mx-auto px-6 pt-28 pb-24 md:pt-36 md:pb-32"
       >
-        {/* title-block style tag, like the corner stamp on an architectural drawing */}
         <motion.div
           variants={item}
-          className="inline-flex items-center gap-3 font-mono text-xs tracking-[0.2em] uppercase text-blueprint-line border border-blueprint-line/30 rounded-sm px-3 py-1.5 mb-8"
+          className="inline-flex items-center gap-3 font-mono text-xs tracking-[0.2em] uppercase text-blueprint-line border border-blueprint-line/30 rounded-sm px-3 py-1.5 mb-8 bg-blueprint-ink/40"
         >
           <span>Keyspace Survey</span>
           <span className="text-blueprint-line/40">•</span>

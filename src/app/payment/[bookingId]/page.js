@@ -1,18 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { CreditCard } from "lucide-react";
+import { Elements } from "@stripe/react-stripe-js";
+import stripePromise from "@/lib/stripe";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
+import CheckoutForm from "@/components/property/CheckoutForm";
 
 export default function PaymentPage({ params }) {
-  const router = useRouter();
   const axiosSecure = useAxiosSecure();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [paying, setPaying] = useState(false);
   const [bookingId, setBookingId] = useState(null);
 
   useEffect(() => {
@@ -25,19 +23,6 @@ export default function PaymentPage({ params }) {
         .finally(() => setLoading(false));
     });
   }, [params, axiosSecure]);
-
-  const handlePay = async () => {
-    setPaying(true);
-    try {
-      await axiosSecure.patch(`/bookings/${bookingId}/confirm-payment`);
-      toast.success("Payment successful!");
-      router.push("/payment-success");
-    } catch (err) {
-      toast.error("Payment failed");
-    } finally {
-      setPaying(false);
-    }
-  };
 
   if (loading) return <Loading />;
   if (!booking) {
@@ -66,13 +51,9 @@ export default function PaymentPage({ params }) {
           </span>
         </div>
 
-        <button
-          onClick={handlePay}
-          disabled={paying}
-          className="w-full flex items-center justify-center gap-2 bg-blueprint-amber text-blueprint-ink font-medium text-sm py-3 rounded-sm hover:bg-blueprint-amber/90 transition-colors disabled:opacity-60"
-        >
-          <CreditCard size={16} /> {paying ? "Processing..." : "Pay Now"}
-        </button>
+        <Elements stripe={stripePromise}>
+          <CheckoutForm booking={booking} bookingId={bookingId} />
+        </Elements>
       </div>
     </div>
   );
