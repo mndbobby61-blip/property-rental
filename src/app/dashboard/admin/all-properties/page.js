@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import toast from "react-hot-toast";
-import { Trash2, Pencil } from "lucide-react";
-import useAuth from "@/hooks/useAuth";
+import { Check, X, Trash2 } from "lucide-react";
 import useAxiosPublic from "@/hooks/useAxiosPublic";
 import Loading from "@/components/shared/Loading";
+import RejectionModal from "@/components/dashboard/RejectionModal";
 
 const statusStyles = {
   approved: "bg-green-100 text-green-700",
@@ -14,20 +13,47 @@ const statusStyles = {
   rejected: "bg-red-100 text-red-700",
 };
 
-export default function MyPropertiesPage() {
-  const { user } = useAuth();
+export default function AdminAllPropertiesPage() {
   const axiosPublic = useAxiosPublic();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [rejectingId, setRejectingId] = useState(null);
 
   useEffect(() => {
-    if (!user?.email) return;
     axiosPublic
-      .get(`/properties/owner/${user.email}`)
+      .get("/properties/all")
       .then((res) => setProperties(res.data))
       .catch((err) => console.error("Failed to load properties:", err))
       .finally(() => setLoading(false));
-  }, [user, axiosPublic]);
+  }, [axiosPublic]);
+
+  const handleApprove = async (id) => {
+    try {
+      await axiosPublic.patch(`/properties/${id}/status`, { status: "approved" });
+      setProperties((prev) => prev.map((p) => (p._id === id ? { ...p, status: "approved" } : p)));
+      toast.success("Property approved");
+    } catch (err) {
+      toast.error("Could not approve");
+    }
+  };
+
+  const handleRejectSubmit = async (feedback) => {
+    try {
+      await axiosPublic.patch(`/properties/${rejectingId}/status`, {
+        status: "rejected",
+        rejectionFeedback: feedback,
+      });
+      setProperties((prev) =>
+        prev.map((p) =>
+          p._id === rejectingId ? { ...p, status: "rejected", rejectionFeedback: feedback } : p
+        )
+      );
+      toast.success("Property rejected");
+      setRejectingId(null);
+    } catch (err) {
+      toast.error("Could not reject");
+    }
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -43,27 +69,27 @@ export default function MyPropertiesPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-medium text-blueprint-charcoal mb-6">My Properties</h1>
+      <h1 className="font-display text-2xl font-medium text-blueprint-charcoal mb-6">All Properties</h1>
 
       {properties.length === 0 ? (
-        <p className="text-blueprint-slate text-sm">You haven&apos;t added any properties yet.</p>
+        <p className="text-blueprint-slate text-sm">No properties yet.</p>
       ) : (
         <div className="overflow-x-auto bg-white border border-blueprint-charcoal/10 rounded-sm">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-blueprint-charcoal/10 text-left">
                 <th className="px-4 py-3 font-mono text-xs uppercase text-blueprint-slate">Title</th>
-                <th className="px-4 py-3 font-mono text-xs uppercase text-blueprint-slate">Type</th>
+                <th className="px-4 py-3 font-mono text-xs uppercase text-blueprint-slate">Owner</th>
                 <th className="px-4 py-3 font-mono text-xs uppercase text-blueprint-slate">Price</th>
                 <th className="px-4 py-3 font-mono text-xs uppercase text-blueprint-slate">Status</th>
-                <th className="px-4 py-3"></th>
+                <th className="px-4 py-3 font-mono text-xs uppercase text-blueprint-slate">Actions</th>
               </tr>
             </thead>
             <tbody>
               {properties.map((p) => (
                 <tr key={p._id} className="border-b border-blueprint-charcoal/5 last:border-0">
                   <td className="px-4 py-3 text-blueprint-charcoal">{p.title}</td>
-                  <td className="px-4 py-3 text-blueprint-slate">{p.type}</td>
+                  <td className="px-4 py-3 text-blueprint-slate">{p.ownerEmail || "—"}</td>
                   <td className="px-4 py-3 font-mono text-blueprint-ink">
                     ৳{Number(p.price).toLocaleString()}
                   </td>
@@ -75,28 +101,31 @@ export default function MyPropertiesPage() {
                     >
                       {p.status}
                     </span>
-                    {p.status === "rejected" && p.rejectionFeedback && (
-                      <span
-                        title={p.rejectionFeedback}
-                        className="ml-2 text-xs text-blueprint-slate cursor-help"
-                      >
-                        👁️
-                      </span>
-                    )}
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-3">
-                      <Link
-                        href={`/dashboard/owner/update-property/${p._id}`}
-                        className="text-blueprint-slate hover:text-blueprint-ink"
-                        aria-label="Edit property"
-                      >
-                        <Pencil size={16} />
-                      </Link>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-2 items-center">
+                      {p.status !== "approved" && (
+                        <button
+                          onClick={() => handleApprove(p._id)}
+                          className="text-green-600 hover:text-green-800"
+                          aria-label="Approve"
+                        >
+                          <Check size={16} />
+                        </button>
+                      )}
+                      {p.status !== "rejected" && (
+                        <button
+                          onClick={() => setRejectingId(p._id)}
+                          className="text-red-500 hover:text-red-700"
+                          aria-label="Reject"
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
                       <button
                         onClick={() => handleDelete(p._id)}
-                        className="text-red-500 hover:text-red-700"
-                        aria-label="Delete property"
+                        className="text-blueprint-slate hover:text-blueprint-charcoal"
+                        aria-label="Delete"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -108,6 +137,8 @@ export default function MyPropertiesPage() {
           </table>
         </div>
       )}
+
+      {rejectingId && <RejectionModal onClose={() => setRejectingId(null)} onSubmit={handleRejectSubmit} />}
     </div>
   );
 }
