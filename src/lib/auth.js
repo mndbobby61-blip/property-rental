@@ -7,9 +7,7 @@ const client = await clientPromise;
 const db = client.db("propertyRentalDB");
 
 export const auth = betterAuth({
-  // ⚠️ collectionNames override দেওয়া হলো না — Better Auth ডিফল্টভাবে
-  // "user" (singular) নামে কালেকশন বানায়, যেটা তোমার server/index.js-এ
-  // db.collection("user") দিয়ে এমনিতেই পড়া হচ্ছে। মিলিয়ে রাখা হলো।
+  
   database: mongodbAdapter(db, { client }),
 
   emailAndPassword: {
@@ -39,7 +37,7 @@ export const auth = betterAuth({
     },
   },
 
-  // ⚠️ নতুন — Express সার্ভার এই plugin-এর /jwks এন্ডপয়েন্ট দিয়ে JWT verify করবে
+  
   plugins: [
     jwt({
       jwt: {

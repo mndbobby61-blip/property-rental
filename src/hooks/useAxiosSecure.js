@@ -9,11 +9,7 @@ const axiosSecure = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000",
 });
 
-/**
- * Favorites, Bookings, Property add/update/delete, Admin route — সব এখন
- * থেকে এই hook ব্যবহার করবে, axiosPublic না। প্রতিটা রিকোয়েস্টের আগে
- * Better Auth-এর /api/auth/token থেকে ফ্রেশ JWT তুলে Authorization header-এ বসায়।
- */
+
 export default function useAxiosSecure() {
   const router = useRouter();
   const { logOut } = useAuth();

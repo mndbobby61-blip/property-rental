@@ -95,7 +95,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* STAGE B-তে এখানে <SocialLogin /> যুক্ত হবে */}
+        
 
         <div className="flex items-center gap-3 my-6">
           <span className="h-px flex-1 bg-blueprint-charcoal/10" />

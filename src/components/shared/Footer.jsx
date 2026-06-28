@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-// lucide-react removed all brand/logo icons (Facebook, Instagram, Twitter, etc.) in v1.0,
-// so these are small custom SVGs instead — generic outline marks, not the official trademarked logos.
+
 function FacebookIcon(props) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -27,8 +26,7 @@ const quickLinks = [
   { href: "/register", label: "Register" },
 ];
 
-// Generic "X" mark (replacement for the old Twitter bird) — simple crossed strokes,
-// not the literal trademarked glyph, just an X-shaped social icon.
+
 function XIcon(props) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>

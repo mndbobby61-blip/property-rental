@@ -3,12 +3,7 @@
 import Link from "next/link";
 import SectionTitle from "../shared/SectionTitle";
 
-/**
- * Extra Section #1 — Top Locations
- * TEMP MOCK DATA — পরে backend থেকে আসবে:
- *   const res = await axiosPublic.get("/properties/top-locations");
- * (server-side aggregation: group by location, count listings)
- */
+
 const locations = [
   { name: "Gulshan", count: 24, image: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=600" },
   { name: "Banani", count: 18, image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=600" },

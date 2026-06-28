@@ -10,8 +10,7 @@ export default function Reviews() {
   const axiosPublic = useAxiosPublic();
   const [reviews, setReviews] = useState([]);
 
-  // ⚠️ আগে এখানে ৪টা mock review (হার্ডকোড করা) ছিল — এখন real review collection থেকে
-  // top-rated/সাম্প্রতিক ৪টা রিভিউ আনা হচ্ছে।
+  
   useEffect(() => {
     axiosPublic
       .get("/reviews", { params: { limit: 4 } })
@@ -19,7 +18,7 @@ export default function Reviews() {
       .catch((err) => console.error("Failed to load reviews:", err));
   }, [axiosPublic]);
 
-  if (reviews.length === 0) return null; // কোনো রিভিউ না থাকলে সেকশন hide
+  if (reviews.length === 0) return null; 
 
   return (
     <section className="bg-white py-20 md:py-28">

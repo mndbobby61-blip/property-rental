@@ -1,19 +1,4 @@
-/**
- * SectionTitle
- * -------------
- * Reused on every home-page section so heading font/size/color stays
- * consistent everywhere (this satisfies the "consistent heading style"
- * UI requirement). The eyebrow row mimics a blueprint dimension line —
- * tick marks on both sides of a small mono label.
- *
- * Usage:
- * <SectionTitle
- *   eyebrow="06 LISTINGS SHOWN"
- *   title="Featured places to stay"
- *   description="A short supporting line about this section."
- *   light // pass this prop when the section background is dark (blueprint.ink)
- * />
- */
+
 export default function SectionTitle({ eyebrow, title, description, light = false, align = "left" }) {
   const base = light ? "text-blueprint-paper" : "text-blueprint-charcoal";
   const sub = light ? "text-blueprint-line" : "text-blueprint-slate";

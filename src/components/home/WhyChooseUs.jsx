@@ -40,7 +40,7 @@ export default function WhyChooseUs() {
           description="A short legend for what makes Keyspace different from a regular listings board."
         />
 
-        {/* legend / key panel — mirrors the symbol-key printed on a blueprint sheet */}
+        
         <div className="mt-12 bg-blueprint-ink rounded-sm overflow-hidden divide-y divide-blueprint-line/15 md:divide-y-0 md:grid md:grid-cols-2">
           {benefits.map(({ icon: Icon, label, description }, i) => (
             <div

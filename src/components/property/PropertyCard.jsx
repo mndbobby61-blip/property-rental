@@ -5,16 +5,7 @@ import { useRouter } from "next/navigation";
 import { MapPin, BedDouble, Bath, ArrowUpRight } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 
-/**
- * PropertyCard
- * -------------
- * ⚠️ ফিক্স: আগে href সরাসরি `user`-এর উপর ভিত্তি করে বদলাতো (/property/x বা /login),
- * যেটা server-render আর client hydrate-এর মাঝে আলাদা হয়ে hydration mismatch warning দিতো
- * (কারণ session লোড হওয়ার আগে server-এ user থাকে না, পরে client-এ থাকে)।
- *
- * এখন href সবসময় স্থির থাকে (/property/${_id}), লগইন-চেক হয় ক্লিক করার সময়
- * (onClick হ্যান্ডলারে) — তাই server আর client-এর HTML সবসময় মিলে যায়।
- */
+
 export default function PropertyCard({ property, badge }) {
   const { user, loading } = useAuth();
   const router = useRouter();

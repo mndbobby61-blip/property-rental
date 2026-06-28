@@ -3,7 +3,7 @@
 import toast from "react-hot-toast";
 import useAuth from "@/hooks/useAuth";
 
-// Google's official multi-color "G" mark, used per Google's own sign-in button guidelines.
+
 function GoogleIcon(props) {
   return (
     <svg viewBox="0 0 48 48" {...props}>
@@ -18,8 +18,7 @@ function GoogleIcon(props) {
 export default function SocialLogin() {
   const { googleSignIn } = useAuth();
 
-  // ক্লিক করার সাথে সাথে ব্রাউজার Google-এর কনসেন্ট পেজে রিডাইরেক্ট হয়ে যায়,
-  // তাই এখানে result আশা করার কিছু নেই — শুধু রিডাইরেক্ট ট্রিগার করা হচ্ছে।
+ 
   const handleGoogleSignIn = () => {
     googleSignIn().catch((err) => {
       toast.error(err.message || "Google sign-in failed");

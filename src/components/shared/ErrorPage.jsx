@@ -3,35 +3,7 @@
 import Link from "next/link";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 
-/**
- * Reusable error / not-found display.
- *
- * Usage in app/not-found.js:
- *   import ErrorPage from "@/components/shared/ErrorPage";
- *   export default function NotFound() {
- *     return (
- *       <ErrorPage
- *         code="404"
- *         title="This page isn't on the map"
- *         message="The listing or page you're looking for may have moved or been removed."
- *       />
- *     );
- *   }
- *
- * Usage in app/error.js (must stay a Client Component, Next.js passes reset()):
- *   "use client";
- *   import ErrorPage from "@/components/shared/ErrorPage";
- *   export default function Error({ error, reset }) {
- *     return (
- *       <ErrorPage
- *         code="500"
- *         title="Something broke on our end"
- *         message="Try again — if it keeps happening, the team's already been notified."
- *         onRetry={reset}
- *       />
- *     );
- *   }
- */
+
 export default function ErrorPage({
   code = "404",
   title = "This page isn't on the map",

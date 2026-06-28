@@ -24,7 +24,7 @@ export default function CheckoutForm({ bookingId, amount, onSuccess, onClose }) 
     setProcessing(true);
     setPaymentError("");
 
-    // 💡 টেস্ট মুডের জন্য স্ট্রাইপ কার্ড টোকেন/পেমেন্ট মেথড তৈরি করা
+    
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
       card,
@@ -38,13 +38,13 @@ export default function CheckoutForm({ bookingId, amount, onSuccess, onClose }) 
       console.log('[PaymentMethod]', paymentMethod);
       
       try {
-        // 🚀 পেমেন্ট সফল হলে ব্যাকএন্ডের PATCH এপিআই হিট হবে
+        
         const response = await axiosPublic.patch(`/bookings/${bookingId}/confirm-payment`);
         
         if (response.data.modifiedCount > 0) {
           toast.success("Payment Successful! Booking Confirmed.");
-          onSuccess(); // ডাটা রিফ্রেশ এবং রিডাইরেক্টের জন্য
-          onClose();   // মডাল বন্ধ করার জন্য
+          onSuccess(); 
+          onClose();   
         } else {
           setPaymentError("Failed to update payment status in database.");
           toast.error("Database update failed.");
@@ -82,7 +82,7 @@ export default function CheckoutForm({ bookingId, amount, onSuccess, onClose }) 
         <p className="text-red-600 text-xs font-mono">{paymentError}</p>
       )}
 
-      {/* অ্যাকশন বাটনসমূহ */}
+      
       <div className="flex justify-end gap-2 mt-4">
         <button
           type="button"

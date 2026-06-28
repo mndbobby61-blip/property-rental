@@ -5,13 +5,7 @@ import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 import Loading from "@/components/shared/Loading";
 
-/**
- * /dashboard-এ সরাসরি কোনো content নেই — এটা শুধু role দেখে ঠিক জায়গায় পাঠিয়ে দেয়।
- * Navbar-এর "Dashboard" লিংক সবসময় /dashboard-এ যায়, এখান থেকেই বাকিটা ঠিক হয়।
- *
- * ⚠️ owner/admin-এর জন্য /dashboard/owner ও /dashboard/admin/all-users এখনো বানানো হয়নি —
- * সেই দুটো role-এর জন্য আপাতত 404 আসবে, এটা পরের ধাপে ঠিক হবে। tenant role-এর জন্য কাজ করবে।
- */
+
 export default function DashboardIndexPage() {
   const { user, loading } = useAuth();
   const router = useRouter();

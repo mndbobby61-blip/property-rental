@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchBar from "./SearchBar";
 
-// ব্যাকগ্রাউন্ডে ঘুরবে এমন ছবি — চাইলে নিজের প্রপার্টির ছবি দিয়ে বদলে দিতে পারো
+
 const bannerImages = [
   "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1600",
   "https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=1600",
@@ -26,7 +26,7 @@ const item = {
 export default function Banner() {
   const [currentImage, setCurrentImage] = useState(0);
 
-  // ৫ সেকেন্ড পর পর পরের ছবিতে crossfade
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % bannerImages.length);
@@ -36,7 +36,7 @@ export default function Banner() {
 
   return (
     <section className="relative bg-blueprint-ink overflow-hidden">
-      {/* ব্যাকগ্রাউন্ড ছবি carousel (crossfade) */}
+      
       <div className="absolute inset-0">
         <AnimatePresence mode="sync">
           <motion.img
@@ -50,11 +50,11 @@ export default function Banner() {
             className="absolute inset-0 h-full w-full object-cover"
           />
         </AnimatePresence>
-        {/* অন্ধকার ওভারলে — টেক্সট পড়া যাবে, blueprint-ink mood থাকবে */}
+        
         <div className="absolute inset-0 bg-blueprint-ink/40" />
       </div>
 
-      {/* faint blueprint grid, ছবির উপরে */}
+      
       <div
         className="absolute inset-0 opacity-[0.07]"
         style={{
@@ -64,7 +64,7 @@ export default function Banner() {
         }}
       />
 
-      {/* carousel indicator dots */}
+      
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {bannerImages.map((_, i) => (
           <button

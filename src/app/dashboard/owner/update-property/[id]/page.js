@@ -12,8 +12,8 @@ const RENT_TYPES = ["Monthly", "Weekly", "Daily"];
 
 export default function UpdatePropertyPage({ params }) {
   const router = useRouter();
-  const axiosPublic = useAxiosPublic(); // GET টা public (Property Details পেজও এটা শেয়ার করে)
-  const axiosSecure = useAxiosSecure(); // PATCH টা protected
+  const axiosPublic = useAxiosPublic(); 
+  const axiosSecure = useAxiosSecure(); 
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);

@@ -24,7 +24,7 @@ export default function PaymentPage({ params }) {
     });
   }, [params, axiosSecure]);
 
-  // ক্লিক করলে Stripe-এর নিজের hosted Checkout পেজে রিডাইরেক্ট হয়ে যাবে
+  
   const handlePay = async () => {
     setProcessing(true);
     try {

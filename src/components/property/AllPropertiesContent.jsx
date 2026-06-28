@@ -37,10 +37,7 @@ export default function AllPropertiesContent() {
   const sort = searchParams.get("sort") || "";
   const page = Number(searchParams.get("page")) || 1;
 
-  /**
-   * filter/sort বদলালে page=1-এ রিসেট হবে (নতুন filter-এ পুরনো page নাম্বারে আটকে থাকবে না),
-   * কিন্তু Pagination থেকে শুধু page বদলালে অন্য কিছু রিসেট হবে না।
-   */
+  
   const updateParams = useCallback(
     (updates) => {
       const params = new URLSearchParams(searchParams.toString());

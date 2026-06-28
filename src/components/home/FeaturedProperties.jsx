@@ -22,7 +22,7 @@ export default function FeaturedProperties() {
   const axiosPublic = useAxiosPublic();
   const [properties, setProperties] = useState([]);
 
-  // ⚠️ আগে এখানে mock data ছিল (_id: "1", "2"...) — এখন real backend থেকে আনা হচ্ছে।
+ 
   useEffect(() => {
     axiosPublic
       .get("/properties", { params: { limit: 6 } })
@@ -30,7 +30,7 @@ export default function FeaturedProperties() {
       .catch((err) => console.error("Failed to load featured properties:", err));
   }, [axiosPublic]);
 
-  if (properties.length === 0) return null; // ডাটা না এলে সেকশনটা hide থাকবে
+  if (properties.length === 0) return null; 
 
   return (
     <section className="bg-blueprint-paper py-20 md:py-28">

@@ -38,7 +38,7 @@ const adminLinks = [
 ];
 
 export default function DashboardSidebar() {
-  // user.role সরাসরি Better Auth session থেকে আসছে (lib/auth.js-এর additionalFields-এ সেট করা)
+  
   const { user } = useAuth();
   const pathname = usePathname();
 
