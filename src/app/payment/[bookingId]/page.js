@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Elements } from "@stripe/react-stripe-js";
-import stripePromise from "@/lib/stripe";
+import toast from "react-hot-toast";
+import { CreditCard } from "lucide-react";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import Loading from "@/components/shared/Loading";
-import CheckoutForm from "@/components/property/CheckoutForm";
 
 export default function PaymentPage({ params }) {
   const axiosSecure = useAxiosSecure();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
   const [bookingId, setBookingId] = useState(null);
 
   useEffect(() => {
@@ -23,6 +23,23 @@ export default function PaymentPage({ params }) {
         .finally(() => setLoading(false));
     });
   }, [params, axiosSecure]);
+
+  // ক্লিক করলে Stripe-এর নিজের hosted Checkout পেজে রিডাইরেক্ট হয়ে যাবে
+  const handlePay = async () => {
+    setProcessing(true);
+    try {
+      const { data } = await axiosSecure.post("/create-checkout-session", {
+        bookingId,
+        amount: booking.amount,
+        propertyTitle: booking.propertyTitle,
+      });
+      window.location.href = data.url;
+    } catch (err) {
+      console.error("Checkout session error:", err.response?.data || err.message);
+      toast.error("Could not start payment");
+      setProcessing(false);
+    }
+  };
 
   if (loading) return <Loading />;
   if (!booking) {
@@ -51,9 +68,17 @@ export default function PaymentPage({ params }) {
           </span>
         </div>
 
-        <Elements stripe={stripePromise}>
-          <CheckoutForm booking={booking} bookingId={bookingId} />
-        </Elements>
+        <button
+          onClick={handlePay}
+          disabled={processing}
+          className="w-full flex items-center justify-center gap-2 bg-blueprint-amber text-blueprint-ink font-medium text-sm py-3 rounded-sm hover:bg-blueprint-amber/90 transition-colors disabled:opacity-60"
+        >
+          <CreditCard size={16} /> {processing ? "Redirecting..." : "Pay Now"}
+        </button>
+
+        <p className="text-blueprint-slate text-xs text-center mt-4">
+          You'll be redirected to Stripe's secure checkout page.
+        </p>
       </div>
     </div>
   );
